@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { getTokenBalance } from '../contracts/getTokenBalance'
 import { ChainId } from '../contracts/web3'
+import { getNftMetadata, NftMetadata } from '../contracts/getNftMetadata'
 
 export const balanceController = async (req: Request, res: Response) => {
   try {
@@ -23,12 +24,24 @@ export const balanceController = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' })
   }
 }
-export const testController = (req: Request, res: Response) => {
+export const nftMetadataController = async (req: Request, res: Response) => {
   try {
-    console.log('Test controller called')
-    res.status(200).json({ message: 'Test controller called' })
+    const { nft, id, chain } = req.params
+    if (!nft || !id) {
+      res.status(400).json({ message: 'Missing required parameters' })
+      return
+    }
+    const validChains: ChainId[] = ['0x1', '0x38', '0x42161']
+    if (chain && !validChains.includes(chain as ChainId)) {
+      res.status(400).json({ message: 'Invalid chain' })
+      return
+    }
+
+    const chainUsed = chain ?? '0x1'
+    const nftMetadata: NftMetadata = await getNftMetadata(chainUsed as ChainId, nft, id)
+    res.status(200).json(nftMetadata)
   } catch (error) {
-    console.error('Test controller error:', error)
+    console.error('Error getting nft controller:', error)
     res.status(500).json({ message: 'Internal server error' })
   }
 }
