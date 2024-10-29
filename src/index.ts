@@ -1,8 +1,11 @@
 import app from './app'
 import * as dotenv from 'dotenv'
 import { createServer, Server } from 'http'
+import { connectMongo } from './db/mongoseConnection'
 
 dotenv.config()
+
+connectMongo()
 
 const server: Server = createServer(app)
 

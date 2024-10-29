@@ -3,7 +3,7 @@ import Web3 from 'web3'
 export type ChainId = '0x1' | '0x38' | '0x42161'
 
 const defaultRPCs = {
-  '0x1': 'https://eth.llamarpc.com',
+  '0x1': 'https://rpc.ankr.com/eth',
   '0x38': 'https://binance.llamarpc.com',
   '0x42161': 'https://1rpc.io/arb'
 }

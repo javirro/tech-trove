@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { getTokenBalance } from '../contracts/getTokenBalance'
 import { ChainId } from '../contracts/web3'
 import { getNftMetadata, NftMetadata } from '../contracts/getNftMetadata'
+import { addNftMetadata } from '../db/manageDbData'
 
 export const balanceController = async (req: Request, res: Response) => {
   try {
@@ -39,6 +40,7 @@ export const nftMetadataController = async (req: Request, res: Response) => {
 
     const chainUsed = chain ?? '0x1'
     const nftMetadata: NftMetadata = await getNftMetadata(chainUsed as ChainId, nft, id)
+    await addNftMetadata(nftMetadata.name, nftMetadata.description, nftMetadata.image)
     res.status(200).json(nftMetadata)
   } catch (error) {
     console.error('Error getting nft controller:', error)

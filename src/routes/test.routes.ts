@@ -7,3 +7,4 @@ const router = Router()
 router.get('/balance/:token/:user/:chain', balanceController)
 router.get('/metadata/:nft/:id', nftMetadataController)
 
+export default router
