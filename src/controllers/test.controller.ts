@@ -66,7 +66,6 @@ export const transactionController = async (req: Request, res: Response) => {
 
     const txHashes: string[] = await getTokenTransactions(address, startBlockNumber, endBlockNumber)
     const txsInformationResult: TransactionInfo[] = []
-    let i = 0
     for (const tx of txHashes) {
       const txInfo = await getTransactionInfoFromHash(tx)
       txsInformationResult.push(txInfo)
