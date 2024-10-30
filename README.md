@@ -14,13 +14,13 @@ For testing the project you can use  a MongoDB through a docker container. The p
 
 Run
 
-´´´
+```
 docker-compose build
-´´´
+```
 
-´´´
+```
 docker-compose up
-´´´
+```
 
 ## Environment variables
 
