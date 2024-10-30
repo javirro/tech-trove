@@ -7,6 +7,8 @@ import getTokenTransactions from '../contracts/etherscan/getTokenTransactions'
 import { getTransactionInfoFromHash, TransactionInfo } from '../contracts/getTransactionInfoFromHash'
 import getBlockNumberByTimestamp from '../contracts/etherscan/getBlockNumberByTimestamp'
 
+// @params token: string, user: string, chain?: string
+// token: tokenAddress, user: userAddress, chain: chainId
 export const balanceController = async (req: Request, res: Response) => {
   try {
     const { token, user, chain } = req.params
@@ -29,6 +31,8 @@ export const balanceController = async (req: Request, res: Response) => {
   }
 }
 
+// @params nft: string, id: string, chain?: string
+// nft: tokenAddress, id: tokenId, chain: chainId
 export const nftMetadataController = async (req: Request, res: Response) => {
   try {
     const { nft, id, chain } = req.params
@@ -51,7 +55,8 @@ export const nftMetadataController = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' })
   }
 }
-
+// @params address: string, start?: string, end?: string
+// address: tokenAddress, start: timestamp, end: timestamp
 export const transactionController = async (req: Request, res: Response) => {
   try {
     const { address, start, end } = req.params
