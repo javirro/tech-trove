@@ -2,8 +2,10 @@ import { Request, Response } from 'express'
 import { getTokenBalance } from '../contracts/getTokenBalance'
 import { ChainId } from '../contracts/web3'
 import { getNftMetadata, NftMetadata } from '../contracts/getNftMetadata'
-import { addNftMetadata } from '../db/manageDbData'
+import { addNftMetadata, addTransactionInfo } from '../db/manageDbData'
 import getTokenTransactions from '../contracts/etherscan/getTokenTransactions'
+import { getTransactionInfoFromHash, TransactionInfo } from '../contracts/getTransactionInfoFromHash'
+import getBlockNumberByTimestamp from '../contracts/etherscan/getBlockNumberByTimestamp'
 
 export const balanceController = async (req: Request, res: Response) => {
   try {
@@ -62,8 +64,19 @@ export const transactionController = async (req: Request, res: Response) => {
     if (start && !isNaN(parseFloat(start))) startBlockNumber = await getBlockNumberByTimestamp(+start)
     if (end && !isNaN(parseFloat(end))) endBlockNumber = await getBlockNumberByTimestamp(+end)
 
-    const transactionInfo = await getTokenTransactions(address, startBlockNumber, endBlockNumber)
-    res.status(200).json(transactionInfo)
+    const txHashes: string[] = await getTokenTransactions(address, startBlockNumber, endBlockNumber)
+    const txsInformationResult: TransactionInfo[] = []
+    let i = 0
+    for (const tx of txHashes) {
+      const txInfo = await getTransactionInfoFromHash(tx)
+      txsInformationResult.push(txInfo)
+      try {
+        await addTransactionInfo(txInfo)
+      } catch (error) {
+        console.error('Error saving transaction info:', error)
+      }
+    }
+    res.status(200).json(txsInformationResult)
   } catch (error) {
     console.error('Transaction controller error:', error)
     res.status(500).json({ message: 'Internal server error' })

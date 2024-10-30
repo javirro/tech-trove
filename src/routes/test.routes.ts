@@ -4,8 +4,8 @@ import { balanceController, nftMetadataController, transactionController } from 
 
 const router = Router()
 
-router.get('/balance/:token/:user/:chain', balanceController)
+router.get('/balance/:token/:user/:chain?', balanceController)
 router.get('/metadata/:nft/:id', nftMetadataController)
-router.get('/transactions/:address/:start/:end', transactionController)
+router.get('/transactions/:address/:start?/:end?', transactionController)
 
 export default router

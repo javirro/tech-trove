@@ -11,3 +11,5 @@ const getBlockNumberByTimestamp = async (timestamp: number): Promise<number> => 
   const blockNumber = json.result as number
   return blockNumber
 }
+
+export default getBlockNumberByTimestamp
