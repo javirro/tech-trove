@@ -3,6 +3,7 @@ import { getTokenBalance } from '../contracts/getTokenBalance'
 import { ChainId } from '../contracts/web3'
 import { getNftMetadata, NftMetadata } from '../contracts/getNftMetadata'
 import { addNftMetadata } from '../db/manageDbData'
+import getTokenTransactions from '../contracts/etherscan/getTokenTransactions'
 
 export const balanceController = async (req: Request, res: Response) => {
   try {
@@ -25,6 +26,7 @@ export const balanceController = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' })
   }
 }
+
 export const nftMetadataController = async (req: Request, res: Response) => {
   try {
     const { nft, id, chain } = req.params
@@ -44,6 +46,26 @@ export const nftMetadataController = async (req: Request, res: Response) => {
     res.status(200).json(nftMetadata)
   } catch (error) {
     console.error('Error getting nft controller:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+}
+
+export const transactionController = async (req: Request, res: Response) => {
+  try {
+    const { address, start, end } = req.params
+    if (!address) {
+      res.status(400).json({ message: 'Bad request. Missing required parameters' })
+      return
+    }
+    let startBlockNumber: number | undefined = undefined
+    let endBlockNumber: number | undefined = undefined
+    if (start && !isNaN(parseFloat(start))) startBlockNumber = await getBlockNumberByTimestamp(+start)
+    if (end && !isNaN(parseFloat(end))) endBlockNumber = await getBlockNumberByTimestamp(+end)
+
+    const transactionInfo = await getTokenTransactions(address, startBlockNumber, endBlockNumber)
+    res.status(200).json(transactionInfo)
+  } catch (error) {
+    console.error('Transaction controller error:', error)
     res.status(500).json({ message: 'Internal server error' })
   }
 }

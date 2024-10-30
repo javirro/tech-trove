@@ -1,12 +1,16 @@
+import { getWeb3 } from '../web3'
 
-
-const getTokenTransactions = async (address: string): Promise<string[]> => {
+const getTokenTransactions = async (address: string, startBlockNumber?: number, endBlockNumber?: number): Promise<string[]> => {
+  const web3 = getWeb3('0x1')
+  const lastCreatedBlock: string = (await web3.eth.getBlockNumber()).toString()
+  const startBlock: number = startBlockNumber ?? parseFloat(lastCreatedBlock) - 50
+  const endBlock: number = endBlockNumber ?? parseFloat(lastCreatedBlock)
   const url = `https://api.etherscan.io/api
 ?module=logs
 &action=getLogs
 &address=${address}
-&fromBlock=21076719
-&toBlock=21076731
+&fromBlock=${startBlock}
+&toBlock=${endBlock}
 &page=1
 &offset=1000
 &apikey=${process.env.ETHERSCAN_API_KEY}`
