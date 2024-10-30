@@ -2,7 +2,7 @@ This is a node.js project.
 
 ## Install dependencies
 npm must be used to install dependencies because project has package-lock.json.
-If you want to install yarn, before install dependencies remove package-lock.json file.
+If you want to install using yarn, before install dependencies remove package-lock.json file to avoid conflicts with yarn.lock.
 
 ```
 npm install
